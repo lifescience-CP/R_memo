@@ -58,6 +58,59 @@ attach(leadership)
 newdata <-leadership[order(gender, -age),]
 detach(leadership)
 
+a <- c(45, 50, 10, 96)
+order(a)
+rank(a)
+sort(a)
+
+total <- merge(dataframeA, dataframeB, by="ID")
+total <- merge(dataframeA, dataframeB, by=c("ID","Country"))   #Horizontal joins like this are typically used 
+                                                               #to add variables to a data frame.
+
+
+total <- rbind(dataframeA, dataframeB)
+
+dataframe[row indices, column indices]
+newdata <- leadership[, c(6:10)]
+
+myvars <- c("q1", "q2", "q3", "q4", "q5")
+newdata <-leadership[myvars]
+
+myvars <- names(leadership) %in% c("q3", "q4")
+newdata <- leadership[!myvars]
+
+newdata <- leadership[c(-8,-9)]
+
+leadership$q3 <- leadership$q4 <- NULL    # you set columns q3 and q4 to undefined (NULL). 
+                                          #  Note that NULL isn’t the same as NA (missing).
+                                          
+newdata <- leadership[1:3,]     # Selecting or excluding observations (rows)
+
+newdata <- leadership[leadership$gender=="M" & leadership$age > 30,]
+
+startdate <- as.Date("2009-01-01")
+enddate <- as.Date("2009-10-31")
+newdata <- leadership[which(leadership$date >= startdate &
+leadership$date <= enddate),]       #very interesting things here!!!!!, which() return the indices
+
+x <- seq(10)
+tf <- (x == 6 | x == 8)
+tf
+which(tf)
+
+newdata <- subset(leadership, age >= 35 | age < 24, select=c(q1, q2, q3, q4))   # the best function for subsetting
+newdata <- subset(leadership, gender=="M" & age > 25, select=gender:q4)         #always use this function to do subset
+
+
+
+
+
+
+                                     
+                                          
+    
+
+
 
 
 
