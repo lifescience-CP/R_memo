@@ -1,0 +1,24 @@
+# very famous question: grade students, Numerical and character functions
+
+y <- mean(x)
+z <- mean(x, trim = 0.05, na.rm=TRUE)
+mean(x) Mean
+mean(c(1,2,3,4)) returns 2.5.
+median(x) Median
+median(c(1,2,3,4)) returns 2.5.
+sd(x) Standard deviation
+sd(c(1,2,3,4)) returns 1.29.
+var(x) Variance
+var(c(1,2,3,4)) returns 1.67.
+mad(x) Median absolute deviation
+mad(c(1,2,3,4)) returns 1.48.
+quantile(x,probs)
+Quantiles where x is the numeric vector, where quantiles are desired and probs is a numeric vector with probabilities in [0,1]
+# 30th and 84th percentiles of x
+y <- quantile(x, c(.3,.84))
+range(x) Range
+x <- c(1,2,3,4)
+range(x) returns c(1,4).
+diff(range(x)) returns 3.
+sum(x) Sum
+sum(c(1,2,3,4)) returns 10.
