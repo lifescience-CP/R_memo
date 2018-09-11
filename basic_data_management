@@ -36,3 +36,30 @@ names()  #can rename variables
 names(leadership)[2] <- "testDate"
 names(leadership)[6:10] <- c("item1", "item2", "item3", "item4", "item5")
 
+is.na(leadership[,6:10]) #leadership[,6:10] limits the data frame to columns 6 to 10, and is.na() identifies which values are missing
+
+leadership$age[leadership$age == 99] <- NA  # assign NA to those way off data
+na.omit()                                   # na.omit() delete any rows with missing data
+newdata <- na.omit(leadership)          # This is very useful for deletion of the specific observation
+
+a <- c(1,2,3)
+is.numeric(a)
+a <- as.character(a)
+is.character(a)
+
+order()  # sort function
+newdata <- leadership[order(leadership$age),]
+
+attach(leadership)
+newdata <- leadership[order(gender, age),]
+detach(leadership)
+
+attach(leadership)
+newdata <-leadership[order(gender, -age),]
+detach(leadership)
+
+
+
+
+
+
