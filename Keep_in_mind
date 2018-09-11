@@ -30,7 +30,19 @@ grades <- read.table("studentgrades.csv", header=TRUE, row.names="StudentID", se
 
 #read.table() converts character variables to factors, which may not always be desirable
 
-grades <- read.table("studentgrades.csv", header=TRUE, row.names="StudentID", sep=",", colClasses=c("character", "character", "character",
+grades <- read.table("studentgrades.csv", header=TRUE, row.names="StudentID", sep=",", colClasses=c("character","character", "character",
 "numeric", "numeric", "numeric")) 
 #use the colClasses option to specify a class (for example, logical, numeric, character, or factor) for each column.
+
+length(object) #Gives the number of elements/components.
+dim(object)  #Gives the dimensions of an object.
+str(object)  #Gives the structure of an object
+class(object)  #Gives the class of an object.
+cbind(object, object, ...) #Combines objects as columns.
+rbind(object, object, ...) #Combines objects as rows.
+head(object) #Lists the first part of an object.
+tail(object) #Lists the last part of an object.
+
+
+
 
