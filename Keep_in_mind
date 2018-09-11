@@ -1,1 +1,36 @@
 
+help("foo") or ?foo
+getwd()                  #Lists the current working directory.
+setwd("mydirectory")     #Changes the current working directory to mydirectory.
+list.files()             #list all files in current directory
+q()
+install.packages("gclus")
+update.packages()
+library(gclus)
+
+c()                                                     #The combine function c() is used to form the vector
+mydata <- data.frame(col1, col2, col3,...)              #set up a dataframe
+  
+patientdata[1:2]
+patientdata[c("diabetes", "status")]
+patientdata$age                                        #Specifying elements of a dataframe
+table()                                                #counting
+                                                       #variables can be described as nominal, ordinal, or continuous
+diabetes <- c("Type1", "Type2", "Type1", "Type1")
+diabetes <- factor(diabetes)              #stores this vector as (1, 2, 1, 1) and associates it with 1 = Type1 and 2 = Type2 internally
+status <- c("Poor", "Improved", "Excellent", "Poor")
+status <- factor(status, ordered=TRUE)
+status <- factor(status, order=TRUE,levels=c("Poor", "Improved", "Excellent"))
+str(patientdata)
+
+mydataframe <- read.table(file, options) 
+#read.table() options:header, sep, row.names, col.names, colClasses, stringsAsFactors
+
+grades <- read.table("studentgrades.csv", header=TRUE, row.names="StudentID", sep=",")  # an example
+
+#read.table() converts character variables to factors, which may not always be desirable
+
+grades <- read.table("studentgrades.csv", header=TRUE, row.names="StudentID", sep=",", colClasses=c("character", "character", "character",
+"numeric", "numeric", "numeric")) 
+#use the colClasses option to specify a class (for example, logical, numeric, character, or factor) for each column.
+
