@@ -22,3 +22,17 @@ agecat <- NA
 agecat[age > 75] <- "Elder"
 agecat[age >= 55 & age <= 75] <- "Middle Aged"
 agecat[age < 55] <- "Young" })
+
+# what is difference between within and transform
+#  within lets you use an earlier defined variable later but not transform
+#  within(BOD, { a <- demand; b <- a }) # ok
+#  transform(BOD, a = demand, b = a) # error
+#  in the following transform is better:
+#  ransform(BOD, Time = demand, demand = Time) # swap columns
+#  within(BOD, { Time <- demand; demand <- Time }) # oops (To perform the swap with within would require that we define a temporary.)
+
+
+names()  #can rename variables
+names(leadership)[2] <- "testDate"
+names(leadership)[6:10] <- c("item1", "item2", "item3", "item4", "item5")
+
