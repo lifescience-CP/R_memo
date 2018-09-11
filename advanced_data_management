@@ -22,3 +22,29 @@ range(x) returns c(1,4).
 diff(range(x)) returns 3.
 sum(x) Sum
 sum(c(1,2,3,4)) returns 10.
+
+
+diff(x, lag=n) Lagged differences, with lag indicating which lag to use. The default lag is 1.
+x<- c(1, 5, 23, 29)
+diff(x) returns c(4, 18, 6).
+min(x) Minimum
+min(c(1,2,3,4)) returns 1.
+max(x) Maximum
+max(c(1,2,3,4)) returns 4.
+scale(x, center=TRUE, scale=TRUE) Column center (center=TRUE) or standardize (center=TRUE, scale=TRUE) data object x
+
+newdata <- scale(mydata)
+newdata <- scale(mydata)*SD + M
+
+
+# probability functions
+
+[dpqr]distribution_abbreviation()
+
+
+d = density
+p = distribution function
+q = quantile function
+r = random generation (random deviates)
+
+
