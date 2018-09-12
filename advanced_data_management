@@ -47,4 +47,65 @@ p = distribution function
 q = quantile function
 r = random generation (random deviates)
 
+we should not ask for the probablity that X is exactly a single number( since the probability is zero). Instead, we need to think about
+the probability that x is close to a single number. 
+we capture the notion of being close to a number with a probability density funciton.
+
+
+#Some of the most useful character functions
+
+nchar(x)  # Counts the number of characters of x. x <- c("ab", "cde", "fghij") length(x) returns 3 
+          # nchar(x[3]) returns 5
+
+
+substr(x, start, stop)  # Extracts or replaces substrings in a character vector. x <- "abcdef". substr(x, 2, 4) returns bcd.
+                        # substr(x, 2, 4) <- "22222" (x is now "a222ef").
+                     
+
+grep(pattern, x, ignore.case=FALSE, fixed=FALSE) # Searches for pattern in x. If fixed=FALSE, then pattern is a
+regular expression. If fixed=TRUE, then pattern is a text string.
+Returns the matching indices.
+grep("A", c("b","A","c"), fixed=TRUE) returns 2.
+
+
+
+sub(pattern, replacement,
+x, ignore.case=FALSE,
+fixed=FALSE)  # Finds pattern in x and substitutes the replacement text. If
+fixed=FALSE, then pattern is a regular expression. If
+fixed=TRUE, then pattern is a text string.
+sub("\\s",".","Hello There") returns Hello.There. Note
+that "\s" is a regular expression for finding whitespace; use
+"\\s" instead, because "\" is R’s escape character
+
+
+strsplit(x, split,
+fixed=FALSE) # Splits the elements of character vector x at split. If
+fixed=FALSE, then pattern is a regular expression. If
+fixed=TRUE, then pattern is a text string.
+y <- strsplit("abc", "") returns a one-component,
+three-element list containing
+"a" "b" "c"
+unlist(y)[2] and sapply(y, "[", 2) both return “b”.
+
+paste(..., sep="") # Concatenates strings after using the sep string to separate them.
+paste("x", 1:3, sep="") returns c("x1", "x2", "x3").
+paste("x",1:3,sep="M") returns c("xM1","xM2" "xM3").
+paste("Today is", date()) returns
+Today is Mon Dec 28 14:17:32 2015
+(I changed the date to appear more current.)
+
+toupper(x) # Uppercase.
+toupper("abc") returns “ABC”.
+
+tolower(x) #Lowercase.
+tolower("ABC") returns “abc”.
+
+
+
+
+
+
+
+
 
