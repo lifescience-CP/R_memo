@@ -1,0 +1,196 @@
+descriptive and inferential statistics
+measures of location and scale for quantitative variables
+generate frequency and contingency tables (and associated chi-square tests) for categorical variables
+various forms of correlation coefficients available for continuous and ordinal variables
+the study of group differences through parametric (t-tests) and nonparametric (Mann–Whitney U test, Kruskal–Wallis test) methods
+look at measures of central tendency, variability, and distribution shape for continuous variables
+
+summary() # function provides the minimum, maximum, quartiles, 
+          # and mean for numerical variables and frequencies for factors and logical vectors
+
+
+#  When comparing groups of individuals or observations, the focus is usually on the
+#  descriptive statistics of each group, rather than the total sample.
+
+aggregate()  # function to obtain descriptive statistics by group
+
+myvars <- c("mpg", "hp", "wt")
+
+aggregate(mtcars[myvars], by=list(am=mtcars$am), mean)
+
+aggregate(mtcars[myvars], by=list(am=mtcars$am), sd)
+
+#Note the use of list(am=mtcars$am). If you used list(mtcars$am), the am column
+would be labeled Group.1 rather than am. You use the assignment to provide a more
+useful column label. If you have more than one grouping variable, you can use code
+like by=list(name1=groupvar1, name2=groupvar2, ... , nameN=groupvarN).
+
+by(data, INDICES, FUN)
+by(mtcars[myvars], mtcars$am, dstats)
+
+The summaryBy() function in the doBy package has the
+format summaryBy(formula, data=dataframe, FUN=function)
+where the formula takes the form
+var1 + var2 + var3 + ... + varN ~ groupvar1 + groupvar2 + ... + groupvarN
+
+
+Variables on the left of the ~ are the numeric variables to be analyzed, and variables
+on the right are categorical grouping variables. The function can be any built-in or
+user-created R function.
+
+summaryBy(mpg+hp+wt~am, data=mtcars, FUN=mystats)
+
+R provides several methods for creating frequency and contingency tables. The most important functions are listed
+
+table(var1, var2, ..., varN) 
+xtabs(formula, data)
+prop.table(table, margins)
+margin.table(table, margins)
+addmargins(table, margins)
+ftable(table)
+
+mytable <- with(Arthritis, table(Improved))
+
+prop.table(mytable)    #  one-way tables
+
+mytable <- table(A, B)
+mytable <- xtabs(~ A + B, data=mydata)     # we need to praticse examples here
+In general, the variables to be cross-classified
+appear on the right of the formula (that is, to the right of the ~) separated by + signs.
+If a variable is included on the left side of the formula, it’s assumed to be a vector of
+frequencies (useful if the data have already been tabulated).
+
+mytable <- xtabs(~ Treatment+Improved, data=Arthritis)
+
+> library(gmodels)
+> CrossTable(Arthritis$Treatment, Arthritis$Improved)
+
+R provides several methods of testing the independence of categorical variables. The
+three tests described in this section are the chi-square test of independence, the
+Fisher exact test, and the Cochran-Mantel–Haenszel test
+
+
+
+> library(vcd)
+> mytable <- xtabs(~Treatment+Improved, data=Arthritis)
+> chisq.test(mytable)
+Pearson’s Chi-squared test
+data: mytable
+X-squared = 13.1, df = 2, p-value = 0.001463
+
+
+
+> mytable <- xtabs(~Improved+Sex, data=Arthritis)
+> chisq.test(mytable)
+Pearson's Chi-squared test
+data: mytable
+X-squared = 4.84, df = 2, p-value = 0.0889
+
+FISHER’S EXACT TEST
+> mytable <- xtabs(~Treatment+Improved, data=Arthritis)
+> fisher.test(mytable)
+Fisher's Exact Test for Count Data
+data: mytable
+p-value = 0.001393
+alternative hypothesis: two.sided
+
+
+COCHRAN–MANTEL–HAENSZEL TEST
+The mantelhaen.test() function provides a Cochran–Mantel–Haenszel chi-square
+test of the null hypothesis that two nominal variables are conditionally independent in
+each stratum of a third variable. The following code tests the hypothesis that the
+Treatment and Improved variables are independent within each level for Sex. The test
+assumes that there’s no three-way (Treatment × Improved × Sex) interaction:
+> mytable <- xtabs(~Treatment+Improved+Sex, data=Arthritis)
+> mantelhaen.test(mytable)
+Cochran-Mantel-Haenszel test
+data: mytable
+Cochran-Mantel-Haenszel M^2 = 14.6, df = 2, p-value = 0.0006647
+The results suggest that the treatment received and the improvement reported aren’t
+independent within each level of Sex (that is, treated individuals improved more than
+those receiving placebos when controlling for sex).
+
+
+Measures of association
+If you can reject
+the null hypothesis, your interest turns naturally to measures of association in order to
+gauge the strength of the relationships present. The assocstats() function in the
+vcd package can be used to calculate the phi coefficient, contingency coefficient, and
+Cramer’s V for a two-way table.
+
+
+> library(vcd)
+> mytable <- xtabs(~Treatment+Improved, data=Arthritis)
+> assocstats(mytable)
+
+                 X^2    df P(> X^2)
+Likelihood Ratio 13.530 2  0.0011536
+Pearson          13.055 2  0.0014626
+Phi-Coefficient : 0.394
+Contingency Coeff.: 0.367
+Cramer's V : 0.394
+
+
+Correlation coefficients are used to describe relationships among quantitative variables
+R can produce a variety of correlation coefficients, including Pearson, Spearman, Kendall, partial, polychoric, and polyserial
+
+cor(x, use= , method= )
+x Matrix or data frame.
+use Specifies the handling of missing data. The options are all.obs (assumes no missing
+data—missing data will produce an error), everything (any correlation involving a
+case with missing values will be set to missing), complete.obs (listwise deletion),
+and pairwise.complete.obs (pairwise deletion).
+method Specifies the type of correlation. The options are pearson, spearman, and kendall.
+
+
+cov(states)
+cor(states)
+cor(states, method="spearman")
+
+> x <- states[,c("Population", "Income", "Illiteracy", "HS Grad")]
+> y <- states[,c("Life Exp", "Murder")]
+> cor(x,y)
+Life Exp Murder
+Population -0.068 0.344
+Income 0.340 -0.230
+Illiteracy -0.588 0.703
+HS Grad 0.582 -0.488
+
+
+
+A partial correlation is a correlation between two quantitative variables, controlling for
+one or more other quantitative variables. You can use the pcor() function in the ggm
+package to provide partial correlation coefficients. The ggm package isn’t installed by
+default, so be sure to install it on first use. The format is
+pcor(u, S)
+where u is a vector of numbers, with the first two numbers being the indices of the
+variables to be correlated, and the remaining numbers being the indices of the conditioning
+variables (that is, the variables being partialed out). S is the covariance matrix
+among the variables.
+
+
+The most common activity in research is the comparison of two groups. Do patients
+receiving a new drug show greater improvement than patients using an existing medication?
+Does one manufacturing process produce fewer defects than another? Which
+of two teaching methods is most cost-effective? If your outcome variable is categorical,
+you can use the methods described in section 7.3. Here, we’ll focus on group comparisons,
+where the outcome variable is continuous and assumed to be distributed
+normally.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
