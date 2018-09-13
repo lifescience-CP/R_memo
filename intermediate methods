@@ -1,1 +1,37 @@
+In many ways, regression analysis lives at the heart of statistics. It’s a broad term for
+a set of methodologies used to predict a response variable (also called a dependent,
+criterion, or outcome variable) from one or more predictor variables (also called independent
+or explanatory variables).
+
+# regression analysis want to find the possible cause and effect 
+
+In this chapter, we’ll focus on regression methods that fall under the rubric of ordinary
+least squares (OLS) regression, including simple linear regression, polynomial regression,
+and multiple linear regression.
+
+In OLS regression, a quantitative dependent variable is predicted from a weighted
+sum of predictor variables, where the weights are parameters estimated from the data
+
+Our primary limitation is our ability to formulate an interesting question, devise a useful
+response variable to measure, and gather appropriate data.
+
+Normality
+Independence
+Linearity
+Homoscedasticity
+
+myfit <- lm(formula, data)
+
+where formula describes the model to be fit and data is the data frame containing the
+data to be used in fitting the model. The resulting object (myfit, in this case) is a list
+that contains extensive information about the fitted model. The formula is typically
+written as
+Y ~ X1 + X2 + ... + Xk
+where the ~ separates the response variable on the left from the predictor variables on
+the right, and the predictor variables are separated by + signs. Other symbols can be
+used to modify the formula in various ways
+
+
+
+
 
