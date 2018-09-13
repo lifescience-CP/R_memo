@@ -31,6 +31,294 @@ where the ~ separates the response variable on the left from the predictor varia
 the right, and the predictor variables are separated by + signs. Other symbols can be
 used to modify the formula in various ways
 
+Symbols commonly used in R formulas
+
+
+~ Separates response variables on the left from the explanatory variables on the right. For
+example, a prediction of y from x, z, and w would be coded y ~ x + z + w.
++ Separates predictor variables.
+: Denotes an interaction between predictor variables. A prediction of y from x, z, and the
+interaction between x and z would be coded y ~ x + z + x:z.
+* A shortcut for denoting all possible interactions. The code y ~ x * z * w expands to
+y ~ x + z + w + x:z + x:w + z:w + x:z:w.
+^ Denotes interactions up to a specified degree. The code y ~ (x + z + w)^2 expands
+to y ~ x + z + w + x:z + x:w + z:w.
+. A placeholder for all other variables in the data frame except the dependent variable. For
+example, if a data frame contained the variables x, y, z, and w, then the code y ~ .
+would expand to y ~ x + z + w.
+- A minus sign removes a variable from the equation. For example, y ~ (x + z + w)^2
+– x:w expands to y ~ x + z + w + x:z + z:w.
+-1 Suppresses the intercept. For example, the formula y ~ x -1 fits a regression of y on
+x, and forces the line through the origin at x=0.
+
+I() Elements within the parentheses are interpreted arithmetically. For example, y ~ x +
+(z + w)^2 would expand to y ~ x + z + w + z:w. In contrast, the code y ~ x +
+I((z + w)^2) would expand to y ~ x + h, where h is a new variable created by
+squaring the sum of z and w.
+
+
+
+
+
+In addition to lm(), table 8.3 lists several functions that are useful when generating a
+simple or multiple regression analysis. Each of these functions is applied to the object
+returned by lm() in order to generate additional information based on that fitted
+model.
+
+
+Table 8.3 Other functions that are useful when fitting linear models
+Function Action
+summary() Displays detailed results for the fitted model
+coefficients() Lists the model parameters (intercept and slopes) for the fitted model
+confint() Provides confidence intervals for the model parameters (95% by default)
+fitted() Lists the predicted values in a fitted model
+residuals() Lists the residual values in a fitted model
+anova() Generates an ANOVA table for a fitted model, or an ANOVA table comparing
+two or more fitted models
+vcov() Lists the covariance matrix for model parameters
+AIC() Prints Akaike’s Information Criterion
+plot() Generates diagnostic plots for evaluating the fit of a model
+predict() Uses a fitted model to predict response values for a new dataset
+
+
+When the regression model contains one dependent variable and one independent
+variable, the approach is called simple linear regression. When there’s one predictor variable
+but powers of the variable are included (for example, X, X2, X3), it’s called polynomial
+regression. When there’s more than one predictor variable, it’s called multiple linear
+regression.
+
+
+> fit <- lm(weight ~ height, data=women)
+> summary(fit)
+Call:
+lm(formula=weight ~ height, data=women)
+Residuals:
+Min 1Q Median 3Q Max
+-1.733 -1.133 -0.383 0.742 3.117
+Coefficients:
+Estimate Std. Error t value Pr(>|t|)
+(Intercept) -87.5167 5.9369 -14.7 1.7e-09 ***
+height 3.4500 0.0911 37.9 1.1e-14 ***
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 '' 1
+Residual standard error: 1.53 on 13 degrees of freedom
+Multiple R-squared: 0.991, Adjusted R-squared: 0.99
+F-statistic: 1.43e+03 on 1 and 13 DF, p-value: 1.09e-14
+> women$weight
+[1] 115 117 120 123 126 129 132 135 139 142 146 150 154 159 164
+> fitted(fit)
+1 2 3 4 5 6 7 8 9
+112.58 116.03 119.48 122.93 126.38 129.83 133.28 136.73 140.18
+10 11 12 13 14 15
+143.63 147.08 150.53 153.98 157.43 160.88
+> residuals(fit)
+
+> plot(women$height,women$weight,
+xlab="Height (in inches)",
+ylab="Weight (in pounds)")
+> abline(fit)
+
+The plot suggests that you might be able to improve on the prediction by using a
+line with one bend
+
+
+The plot in figure 8.1 suggests that you might be able to improve your prediction
+using a regression with a quadratic term (that is, X 2). You can fit a quadratic equation
+using the statement
+fit2 <- lm(weight ~ height + I(height^2), data=women)
+The new term I(height^2) requires explanation. height^2 adds a height-squared
+term to the prediction equation. The I function treats the contents within the parentheses
+as an R regular expression. You need this because the ^ operator has a special
+meaning in formulas that you don’t want to invoke here
+
+> fit2 <- lm(weight ~ height + I(height^2), data=women)
+> summary(fit2)
+Call:
+lm(formula=weight ~ height + I(height^2), data=women)
+Residuals:
+Min 1Q Median 3Q Max
+-0.5094 -0.2961 -0.0094 0.2862 0.5971
+Coefficients:
+Estimate Std. Error t value Pr(>|t|)
+(Intercept) 261.87818 25.19677 10.39 2.4e-07 ***
+height -7.34832 0.77769 -9.45 6.6e-07 ***
+I(height^2) 0.08306 0.00598 13.89 9.3e-09 ***
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Residual standard error: 0.384 on 12 degrees of freedom
+Multiple R-squared: 0.999, Adjusted R-squared: 0.999
+F-statistic: 1.14e+04 on 2 and 12 DF, p-value: <2e-16
+> plot(women$height,women$weight,
+xlab="Height (in inches)",
+ylab="Weight (in lbs)")
+> lines(women$height,fitted(fit2))
+
+you can see that the curve does indeed provide a better fit.
+
+Note that this polynomial equation still fits under the rubric of linear regression. It’s
+linear because the equation involves a weighted sum of predictor variables (height
+and height-squared in this case).
+
+In general, an nth-degree polynomial produces a curve with n-1 bends. To fit a cubic
+polynomial, you’d use
+fit3 <- lm(weight ~ height + I(height^2) +I(height^3), data=women)
+Although higher polynomials are possible, I’ve rarely found that terms higher than
+cubic are necessary.
+
+
+When there’s more than one predictor variable, simple linear regression becomes
+multiple linear regression, and the analysis grows more involved. Technically, polynomial
+regression is a special case of multiple regression. Quadratic regression has two
+predictors (X and X2), and cubic regression has three predictors (X, X2, and X3).
+
+
+states <- as.data.frame(state.x77[,c("Murder", "Population",
+"Illiteracy", "Income", "Frost")])
+This code creates a data frame called states, containing the variables you’re interested
+in.
+
+
+A good first step in multiple regression is to examine the relationships among the
+variables two at a time. The bivariate correlations are provided by the cor() function,
+and scatter plots are generated from the scatterplotMatrix() function in the car
+package
+
+
+> states <- as.data.frame(state.x77[,c("Murder", "Population",
+"Illiteracy", "Income", "Frost")])
+> cor(states)
+Murder Population Illiteracy Income Frost
+Murder 1.00 0.34 0.70 -0.23 -0.54
+Population 0.34 1.00 0.11 0.21 -0.33
+Illiteracy 0.70 0.11 1.00 -0.44 -0.67
+Income -0.23 0.21 -0.44 1.00 0.23
+Frost -0.54 -0.33 -0.67 0.23 1.00
+> library(car)
+> scatterplotMatrix(states, spread=FALSE, smoother.args=list(lty=2),
+main="Scatter Plot Matrix")
+
+
+> states <- as.data.frame(state.x77[,c("Murder", "Population",
+"Illiteracy", "Income", "Frost")])
+> fit <- lm(Murder ~ Population + Illiteracy + Income + Frost,
+data=states)
+> summary(fit)
+
+Call:
+lm(formula=Murder ~ Population + Illiteracy + Income + Frost,
+data=states)
+Residuals:
+Min 1Q Median 3Q Max
+-4.7960 -1.6495 -0.0811 1.4815 7.6210
+Coefficients:
+Estimate Std. Error t value Pr(>|t|)
+(Intercept) 1.23e+00 3.87e+00 0.32 0.751
+Population 2.24e-04 9.05e-05 2.47 0.017 *
+Illiteracy 4.14e+00 8.74e-01 4.74 2.2e-05 ***
+Income 6.44e-05 6.84e-04 0.09 0.925
+Frost 5.81e-04 1.01e-02 0.06 0.954
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.v 0.1 'v' 1
+Residual standard error: 2.5 on 45 degrees of freedom
+Multiple R-squared: 0.567, Adjusted R-squared: 0.528
+F-statistic: 14.7 on 4 and 45 DF, p-value: 9.13e-08
+
+
+When there’s more than one predictor variable, the regression coefficients indicate
+the increase in the dependent variable for a unit change in a predictor variable, holding
+all other predictor variables constant. For example, the regression coefficient for
+Illiteracy is 4.14, suggesting that an increase of 1% in illiteracy is associated with a
+4.14% increase in the murder rate, controlling for population, income, and temperature.
+The coefficient is significantly different from zero at the p < .0001 level. On the
+other hand, the coefficient for Frost isn’t significantly different from zero (p = 0.954)
+suggesting that Frost and Murder aren’t linearly related when controlling for the
+other predictor variables. Taken together, the predictor variables account for 57% of
+the variance in murder rates across states.
+
+Up to this point, we’ve assumed that the predictor variables don’t interact. In the
+next section, we’ll consider a case in which they do.
+
+Consider the automobile data in the mtcars data frame. Let’s say
+that you’re interested in the impact of automobile weight and horsepower on mileage.
+You could fit a regression model that includes both predictors, along with their
+interaction
+
+> fit <- lm(mpg ~ hp + wt + hp:wt, data=mtcars)
+> summary(fit)
+
+Call:
+lm(formula=mpg ~ hp + wt + hp:wt, data=mtcars)
+Residuals:
+Min 1Q Median 3Q Max
+-3.063 -1.649 -0.736 1.421 4.551
+Coefficients:
+Estimate Std. Error t value Pr(>|t|)
+(Intercept) 49.80842 3.60516 13.82 5.0e-14 ***
+hp -0.12010 0.02470 -4.86 4.0e-05 ***
+wt -8.21662 1.26971 -6.47 5.2e-07 ***
+hp:wt 0.02785 0.00742 3.75 0.00081 ***
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Residual standard error: 2.1 on 28 degrees of freedom
+Multiple R-squared: 0.885, Adjusted R-squared: 0.872
+F-statistic: 71.7 on 3 and 28 DF, p-value: 2.98e-13
+
+The model for predicting mpg is = 49.81 – 0.12 × hp – 8.22 × wt + 0.03 × hp ×
+wt. To interpret the interaction, you can plug in various values of wt and simplify the
+equation. For example, you can try the mean of wt (3.2) and one standard deviation
+below and above the mean (2.2 and 4.2, respectively). For wt=2.2, the equation simplifies
+to = 49.81 – 0.12 × hp – 8.22 × (2.2) + 0.03 × hp × (2.2) = 31.41 – 0.06 × hp.
+For wt=3.2, this becomes = 23.37 – 0.03 × hp. Finally, for wt=4.2 the equation
+becomes = 15.33 – 0.003 × hp. You see that as weight increases (2.2, 3.2, 4.2), the
+expected change in mpg from a unit increase in hp decreases (0.06, 0.03, 0.003).
+
+
+You can visualize interactions using the effect() function in the effects package.
+The format is
+plot(effect(term, mod,, xlevels), multiline=TRUE)
+where term is the quoted model term to plot, mod is the fitted model returned by
+lm(), and xlevels is a list specifying the variables to be set to constant values and the
+values to employ. The multiline=TRUE option superimposes the lines being plotted.
+For the previous model, this becomes
+library(effects)
+plot(effect("hp:wt", fit,, list(wt=c(2.2,3.2,4.2))), multiline=TRUE)
+
+You can see from this graph
+that as the weight of the car
+increases, the relationship
+between horsepower and miles
+per gallon weakens. For wt=4.2,
+the line is almost horizontal,
+indicating that as hp increases,
+mpg doesn’t change.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
