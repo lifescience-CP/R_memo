@@ -178,6 +178,35 @@ where the outcome variable is continuous and assumed to be distributed
 normally.
 
 
+Independent t-test
+
+t.test(y ~ x, data)
+where y is numeric and x is a dichotomous variable, or
+
+
+t.test(y1, y2)
+where y1 and y2 are numeric vectors (the outcome variable for each group).
+
+> library(MASS)
+> t.test(Prob ~ So, data=UScrime)
+Welch Two Sample t-test
+data: Prob by So
+t = -3.8954, df = 24.925, p-value = 0.0006506
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+-0.03852569 -0.01187439
+sample estimates:
+mean in group 0 mean in group 1
+0.03851265 0.06371269
+You can reject the hypothesis that Southern states and non-Southern states have equal
+probabilities of imprisonment (p < .001).
+
+dependent t-test assumes that the difference between groups is normally distributed.
+In this case, the format is
+t.test(y1, y2, paired=TRUE)
+Pre-post or repeated-measures designs also produce dependent
+groups.
+
 
 
 
