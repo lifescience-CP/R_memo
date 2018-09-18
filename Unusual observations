@@ -1,0 +1,62 @@
+Outliers are observations that aren’t predicted well by the model
+They have unusually large positive or negative residuals
+Points in the Q-Q plot of figure 8.9
+that lie outside the confidence band are considered outliers. A rough rule of thumb is
+that standardized residuals that are larger than 2 or less than –2 are worth attention.
+
+> library(car)
+> outlierTest(fit)
+If it isn’t significant, there are no outliers in the dataset. If it’s significant, you must
+delete it and rerun the test to see if others are present.
+
+
+High-leverage points
+Observations that have high leverage are outliers with regard to the other predictors.
+In other words, they have an unusual combination of predictor values. The response
+value isn’t involved in determining leverage.
+
+
+
+Influential observations have a disproportionate impact on the values of the model
+parameters. Imagine finding that your model changes dramatically with the removal
+of a single observation. It’s this concern that leads you to examine your data for influential
+points.
+
+
+“What do you do if you identify problems?” There are four approaches to dealing with
+violations of regression assumptions:
+■ Deleting observations
+■ Transforming variables
+■ Adding or deleting variables
+■ Using another regression approach
+
+Up to this point in the chapter, we’ve been asking, “Which variables are useful for predicting
+the outcome?” But often your real interest is in the question, “Which variables
+are most important in predicting the outcome?” You implicitly want to rank-order the
+predictors in terms of relative importance.
+
+
+Summary
+Regression analysis is a term that covers a broad range of methodologies in statistics.
+You’ve seen that it’s a highly interactive approach that involves fitting models, assessing
+their fit to statistical assumptions, modifying both the data and the models, and
+refitting to arrive at a final result. In many ways, this final result is based on art and
+skill as much as science.
+This has been a long chapter, because regression analysis is a process with many
+parts. We’ve discussed fitting OLS regression models, using regression diagnostics to
+assess the data’s fit to statistical assumptions, and methods for modifying the data to
+meet these assumptions more closely. We looked at ways of selecting a final regression
+model from many possible models, and you learned how to evaluate its likely performance
+on new samples of data. Finally, we tackled the thorny problem of variable
+importance: identifying which variables are the most important for predicting an
+outcome.
+In each of the examples in this chapter, the predictor variables have been quantitative.
+However, there are no restrictions against using categorical variables as predictors
+as well. Using a categorical predictor such as gender, treatment type, or
+manufacturing process allows you to examine group differences on a response or outcome
+variable. This is the focus of our next chapter.
+Listing 8.17 Applying the relweights() function
+Licensed
+
+
+
