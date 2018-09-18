@@ -1,0 +1,38 @@
+Power analysis allows you to determine the sample size required to detect an
+effect of a given size with a given degree of confidence. Conversely, it allows you to
+determine the probability of detecting an effect of a given size with a given level of
+confidence, under sample size constraints. If the probability is unacceptably low,
+you’d be wise to alter or abandon the experiment.
+
+In this chapter, you’ll learn how to conduct power analyses for a variety of statistical
+tests, including tests of proportions, t-tests, chi-square tests, balanced one-way
+ANOVA, tests of correlations, and linear models. Because power analysis applies to
+hypothesis testing situations, we’ll start with a brief review of null hypothesis significance
+testing (NHST).
+
+
+In statistical hypothesis testing, you specify a hypothesis about a population parameter
+(your null hypothesis, or H0). You then draw a sample from this population and calculate
+a statistic that’s used to make inferences about the population parameter.
+Assuming that the null hypothesis is true, you calculate the probability of obtaining
+the observed sample statistic or one more extreme. If the probability is sufficiently
+small, you reject the null hypothesis in favor of its opposite (referred to as the alternative
+or research hypothesis, H1).
+
+An example will clarify the process. Say you’re interested in evaluating the impact
+of cell phone use on driver reaction time. Your null hypothesis is Ho: μ1 – μ2 = 0,
+where μ1 is the mean response time for drivers using a cell phone and μ2 is the mean
+response time for drivers that are cell phone free (here, μ1 – μ2 is the population
+parameter of interest). If you reject this null hypothesis, you’re left with the alternate
+or research hypothesis, namely H1: μ1 – μ2 ≠ 0. This is equivalent to μ1 ≠ μ2, that the
+mean reaction times for the two conditions are not equal.
+
+
+
+
+
+
+
+
+
+
