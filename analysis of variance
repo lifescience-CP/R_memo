@@ -1,0 +1,358 @@
+In chapter 7, we looked at regression models for predicting a quantitative response
+variable from quantitative predictor variables
+
+But there’s no reason that we
+couldn’t have included nominal or ordinal factors as predictors as well
+
+When factors
+are included as explanatory variables, our focus usually shifts from prediction
+to understanding group differences, and the methodology is referred to as analysis
+of variance (ANOVA). ANOVA methodology is used to analyze a wide variety of experimental
+and quasi-experimental designs. This chapter provides an overview of R
+functions for analyzing common research designs.
+
+understanding group difference
+
+In addition to the base installation, you’ll be using the car, gplots, HH, rrcov,
+multicomp, effects, MASS, and mvoutlier packages in the examples. Be sure to install
+them before trying out the sample code.
+
+Treatment is a between-groups factor with two levels (CBT, EMDR).
+
+STAI is the dependent variable, and Treatment is the independent variable.
+balanced design
+unbalanced design.
+
+Treatment
+CBT EMDR
+s1 s6
+s2 s7
+s3 s8
+s4 s9
+s5 s10
+
+The statistical design in table 9.1 is called a
+one-way ANOVA because there’s a single classification
+variable. Specifically, it’s a one-way
+between-groups ANOVA. Effects in ANOVA
+designs are primarily evaluated through F
+tests. If the F test for Treatment is significant,
+you can conclude that the mean STAI scores
+for two therapies differed after five weeks of
+treatment.
+
+
+If you were interested in the effect of CBT on
+anxiety over time, you could place all 10
+patients in the CBT group and assess them at
+the conclusion of therapy and again six months
+later. This design is displayed in table 9.2.
+Table 9.2 One-way within-groups ANOVA
+
+Patient
+Time
+5 weeks 6 months
+s1
+s2
+s3
+s4
+s5
+s6
+s7
+s8
+s9
+s10
+
+Time is a within-groups factor with two levels (five weeks, six months). It’s called a
+within-groups factor because each patient is measured under both levels. The statistical
+design is a one-way within-groups ANOVA. Because each subject is measured more
+than once, the design is also called a repeated measures ANOVA. If the F test for Time is
+significant, you can conclude that patients’ mean STAI scores changed between five
+weeks and six months.
+
+
+By including both Therapy and Time as factors, you’re able to examine the impact
+of Therapy (averaged across time), Time (averaged across therapy type), and the
+interaction of Therapy and Time. The first two are called the main effects, whereas the
+interaction is (not surprisingly) called an interaction effect.
+
+
+When you cross two or more factors, as is done here, you have a factorial ANOVA
+design. Crossing two factors produces a two-way ANOVA, crossing three factors produces
+a three-way ANOVA, and so forth. When a factorial design includes both
+between-groups and within-groups factors, it’s also called a mixed-model ANOVA. The
+current design is a two-way mixed-model factorial ANOVA (phew!).
+
+
+Table 9.3 Two-way factorial ANOVA with one between-groups and one within-groups factor
+Patient
+              Time
+          5 weeks 6 months
+Therapy
+CBT
+s1
+s2
+s3
+s4
+s5
+EMDR
+s6
+s7
+s8
+s9
+s10
+
+
+In this case, you’ll have three F tests: one for Therapy, one for Time, and one for
+the Therapy × Time interaction. A significant result for Therapy indicates that CBT
+and EMDR differ in their impact on anxiety. A significant result for Time indicates that
+anxiety changed from week five to the six-month follow-up. A significant Therapy ×
+Time interaction indicates that the two treatments for anxiety had a differential
+impact over time (that is, the change in anxiety from five weeks to six months was different
+for the two treatments).
+
+it’s a confounding factor
+it’s called a nuisance variable
+
+If you recorded depression levels using a self-report depression measure such as
+the Beck Depression Inventory (BDI) when patients were recruited, you could statistically
+adjust for any treatment group differences in depression before assessing the
+impact of therapy type. In this case, BDI would be called a covariate, and the design
+would be called an analysis of covariance (ANCOVA).
+
+Although ANOVA and regression methodologies developed separately, functionally
+they’re both special cases of the general linear model. You could analyze ANOVA models
+using the same lm() function used for regression in chapter 7. But you’ll primarily
+use the aov() function in this chapter. The results of lm() and aov() are equivalent,
+but the aov() function presents these results in a format that’s more familiar to
+ANOVA methodologists. For completeness, I’ll provide an example using lm() at the
+end of this chapter
+
+The syntax of the aov() function is aov(formula, data=dataframe). Table 9.4
+describes special symbols that can be used in the formulas. In this table, y is the
+dependent variable and the letters A, B, and C represent factors.
+
+
+~ Separates response variables on the left from the explanatory variables on the
+right. For example, a prediction of y from A, B, and C would be coded
+y ~ A + B + C
+: Denotes an interaction between variables. A prediction of y from A, B, and the
+interaction between A and B would be coded
+y ~ A + B + A:B
+* Denotes the complete crossing variables. The code y ~ A*B*C expands to
+y ~ A + B + C + A:B + A:C + B:C + A:B:C
+^ Denotes crossing to a specified degree. The code y ~ (A+B+C)^2 expands to
+y ~ A + B + C + A:B + A:C + A:B
+. Denotes all remaining variables. The code y ~ . expands to
+y ~ A + B + C
+Special symbols used in R formulas
+In this table, y is the
+dependent variable and the letters A, B, and C represent factors.
+
+Table 9.5 provides formulas for several common research designs. In this table, lowercase
+letters are quantitative variables, uppercase letters are grouping factors, and
+Subject is a unique identifier variable for subjects.
+
+Table 9.5 Formulas for common research designs
+Design Formula
+One-way ANOVA y ~ A
+One-way ANCOVA with 1 covariate y ~ x + A
+Two-way factorial ANOVA y ~ A * B
+Two-way factorial ANCOVA with 2 covariates y ~ x1 + x2 + A * B
+Randomized block y ~ B + A (where B is a blocking factor)
+One-way within-groups ANOVA y ~ A + Error(Subject/A)
+Repeated measures ANOVA with 1 within-groups
+factor (W) and 1 between-groups factor (B)
+y ~ B * W + Error(Subject/W)
+
+By default, R employs the Type I (sequential) approach to calculating ANOVA
+effects (see the sidebar “Order counts!”). The first model can be written as y ~ A + B
++ A:B. The resulting R ANOVA table will assess
+■ The impact of A on y
+■ The impact of B on y, controlling for A
+■ The interaction of A and B, controlling for the A and B main effects
+
+
+
+Order counts!
+When independent variables are correlated with each other or with covariates, there’s
+no unambiguous method for assessing the independent contributions of these variables
+to the dependent variable. Consider an unbalanced two-way factorial design with
+factors A and B and dependent variable y. There are three effects in this design: the
+A and B main effects and the A × B interaction. Assuming that you’re modeling the
+data using the formula
+Y ~ A + B + A:B
+there are three typical approaches for partitioning the variance in y among the effects
+on the right side of this equation.
+TYPE I (SEQUENTIAL)
+Effects are adjusted for those that appear earlier in the formula. A is unadjusted. B
+is adjusted for the A. The A:B interaction is adjusted for A and B.
+TYPE II (HIERARCHICAL)
+Effects are adjusted for other effects at the same or lower level. A is adjusted for B.
+B is adjusted for A. The A:B interaction is adjusted for both A and B.
+TYPE III (MARGINAL)
+Each effect is adjusted for every other effect in the model. A is adjusted for B and
+A:B. B is adjusted for A and A:B. The A:B interaction is adjusted for A and B.
+R employs the Type I approach by default. Other programs such as SAS and SPSS
+employ the Type III approach by default.
+
+
+In general, more fundamental effects should be
+listed earlier in the formula. In particular, covariates should be listed first, followed by
+main effects, followed by two-way interactions, followed by three-way interactions, and
+so on. For main effects, more fundamental variables should be listed first. Thus gender
+would be listed before treatment. Here’s the bottom line: when the research
+design isn’t orthogonal (that is, when the factors and/or covariates are correlated), be
+careful when specifying the order of effects.
+
+
+When performing statistical analysis, independent variables that affect a particular dependent variable are said to be orthogonal 
+if they are uncorrelated
+
+Before moving on to specific examples, note that the Anova() function in the car
+package (not to be confused with the standard anova() function) provides the option
+of using the Type II or Type III approach, rather than the Type I approach used by the
+aov() function. You may want to use the Anova() function if you’re concerned about
+matching your results to those provided by other packages such as SAS and SPSS. See
+help(Anova, package="car") for details.
+
+
+In a one-way ANOVA, you’re interested in comparing the dependent variable means of
+two or more groups defined by a categorical grouping factor
+
+
+Looking at the output, you can
+see that 10 patients received each
+of the drug regimens b. From
+the means, it appears that drugE
+produced the greatest cholesterol
+reduction, whereas 1time produced
+the least c. Standard deviations
+were relatively constant
+across the five groups, ranging
+from 2.88 to 3.48 d. The ANOVA
+F test for treatment (trt) is significant
+(p < .0001), providing evidence
+that the five treatments
+aren’t all equally effective e.
+The plotmeans() function in
+the gplots package can be used
+to produce a graph of group
+means and their confidence
+intervals f. A plot of the treatment
+means, with 95% confidence limits, is provided in figure 9.1 and allows you to
+clearly see these treatment differences
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
